@@ -1,5 +1,5 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import debounce from 'debounce';
 	import { _ITEMS_PER_PAGE } from '../../routes/+page';
 	const searchForBook = debounce((e) => {
@@ -9,7 +9,8 @@
 		}
 		e.target.form.requestSubmit();
 	}, 2000);
-	let searchQuery = $page.data?.q;
+	let searchQuery = $derived(page.data?.q);
+	let user = $derived(page.data?.user);
 	let searchBar = $state();
 	let isSearching = $state(false);
 
@@ -39,8 +40,24 @@
 					/>
 				</svg>
 			</div>
-			<ul class="p-2 mt-3 shadow menu menu-sm dropdown-content bg-base-100 rounded-box z-1 w-52">
-				<li><a href="/">Homepage</a></li>
+			<ul
+				class="p-2 mt-3 shadow menu menu-sm dropdown-content bg-base-100 text-primary rounded-box z-1 w-52"
+			>
+				<li>
+					<a href="/me">
+						<div class="avatar avatar-placeholder">
+							<div class="bg-neutral text-neutral-content w-10 rounded-full mask mask-squircle">
+								{#if user && user.name}
+									{user.name
+										.split(' ')
+										.map((/** @type string */ name) => name[0].toUpperCase())
+										.join('')}
+								{/if}
+							</div>
+						</div>
+						{user.name}</a
+					>
+				</li>
 			</ul>
 		</div>
 	</div>

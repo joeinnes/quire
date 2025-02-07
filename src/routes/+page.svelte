@@ -1,8 +1,5 @@
 <script>
-	import NavBar from '../lib/components/NavBar.svelte';
-
 	import CoverImage from '../lib/components/CoverImage.svelte';
-
 	import debounce from 'debounce';
 	import Illustration from '$lib/illustrations/Illustration.svelte';
 	import { _ITEMS_PER_PAGE } from './+page';
@@ -15,18 +12,18 @@
 		e.target.form.requestSubmit();
 	}, 2000);
 	let { data } = $props();
-	let { bookList, q } = $derived(data);
+	let { bookList, currentlyReadingBooks, q } = $derived(data);
 </script>
 
 <div class="bg-primary text-primary-content">
 	<h2 class="text-center text-8xl">Q</h2>
-	<div class="w-1/3 mx-auto py-8"><Illustration /></div>
+	<div class="w-1/3 py-8 mx-auto"><Illustration /></div>
 </div>
-
+{JSON.stringify(currentlyReadingBooks)}
 {#key q}
 	<!-- Reawait the promise if the search query changes -->
 	{#await bookList}
-		<div class="w-full text-center mt-8">
+		<div class="w-full mt-8 text-center">
 			<span class="loading loading-dots loading-md"></span>
 		</div>
 	{:then bookList}
@@ -41,27 +38,29 @@
 				{/if}
 			</h2>
 
-			<ul class="list text-accent-content w-full mx-auto grid grid-cols-2 gap-2">
+			<ul class="grid w-full grid-cols-2 gap-2 mx-auto list text-accent-content">
 				{#if !(bookList && bookList.docs) || bookList.docs.length === 0}
-					<li class="list-row items-center rounded-b-none">
-						<div class="text-center w-full">No results found</div>
+					<li class="items-center rounded-b-none list-row">
+						<div class="w-full text-center">No results found</div>
 					</li>
 				{:else}
 					{#each bookList?.docs as book (book.key)}
 						<a href="/book/{book?.key.replace('/works/', '')}">
-							<li class="list-row items-center rounded-b-none flex flex-col h-full">
+							<li class="flex flex-col items-center h-full rounded-b-none list-row">
 								<CoverImage
 									title={book.title}
 									key={book?.cover_edition_key}
-									author={book.author_name && book.author_name[0]}
+									author={book.author_name && book.author_name[0]
+										? book.author_name.join(', ')
+										: ''}
 								/>
 
 								<div class="text-left">
-									<div class="text-pretty font-semibold capitalize">
+									<div class="font-semibold capitalize text-pretty">
 										{book.title}
 									</div>
 									<div class="text-xs uppercase opacity-60">
-										{book.author_name && book.author_name[0]} - {book.first_publish_year}
+										{book.author_name && book.author_name[0] ? book.author_name.join(', ') : ''} - {book.first_publish_year}
 									</div>
 
 									<div class="rating rating-sm rating-half">
@@ -84,9 +83,9 @@
 							</li>
 						</a>
 					{/each}
-					<div class="join my-8 mx-auto col-span-2">
+					<div class="col-span-2 mx-auto my-8 join">
 						<button
-							class="join-item btn disabled:bg-base-300 shadow-none"
+							class="shadow-none join-item btn disabled:bg-base-300"
 							style={bookList?.offset - _ITEMS_PER_PAGE < 0
 								? 'background-color: color-mix(in oklab, var(--color-base-100) 75%, transparent)'
 								: ''}
@@ -94,13 +93,13 @@
 							onclick={() =>
 								goto(`?q=${bookList?.q}&offset=${bookList?.offset - _ITEMS_PER_PAGE}'`)}>«</button
 						>
-						<button class="join-item btn shadow-none"
+						<button class="shadow-none join-item btn"
 							>Page {1 + bookList?.offset / _ITEMS_PER_PAGE} / {Math.ceil(
 								bookList?.numFound / _ITEMS_PER_PAGE
 							)}</button
 						>
 						<button
-							class="join-item btn shadow-none"
+							class="shadow-none join-item btn"
 							disabled={bookList?.offset + _ITEMS_PER_PAGE >= bookList?.numFound}
 							style={bookList?.offset + _ITEMS_PER_PAGE >= bookList?.numFound
 								? 'background-color: color-mix(in oklab, var(--color-base-100) 75%, transparent)'

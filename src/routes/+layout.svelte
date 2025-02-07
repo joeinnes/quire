@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import NavBar from '$lib/components/NavBar.svelte';
-	let { data, children }: { data: LayoutData; children: Snippet } = $props();
+	let { children }: { children: Snippet } = $props();
 </script>
 
 <svelte:head>
@@ -11,7 +11,8 @@
 </svelte:head>
 <div class="flex flex-col h-screen">
 	<NavBar />
-	<main class="flex-1 overflow-y-scroll overflow-x-hidden">
+
+	<main class="flex-1 overflow-x-hidden overflow-y-scroll">
 		{@render children?.()}
 	</main>
 </div>

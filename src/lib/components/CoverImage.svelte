@@ -1,10 +1,18 @@
 <script>
 	// This is super cool! https://codepen.io/realvjy/pen/KKEdXOa
-	const { title = '', key = '', className = '', author = '', loading = false } = $props();
+	let {
+		title = '',
+		key = '',
+		className = '',
+		author = '',
+		loading = false,
+		disableInteractions = false
+	} = $props();
 	let imageLoaded = $state(false);
 	let cw = $state(0);
 	let err = $state(false);
 	let height = $derived((cw * 59) / 36); // NOTE: this is a magic number, the aspect ratio of the cover image
+	$inspect(disableInteractions);
 </script>
 
 <div class="w-full book-items" bind:clientWidth={cw}>
@@ -13,9 +21,9 @@
 			<div
 				class="book-inside absolute w-[90%] h-[96%] top-[1%] left-[1rem] border-[1px] border-solid border-grey-300 rounded-lg bg-white"
 			></div>
-			<div class="book-image">
+			<div class="book-image {disableInteractions ? '' : 'with-interactions'}">
 				<!-- if key then load image-->
-				{#if !imageLoaded || !key || loading}
+				{#if key && (loading || !imageLoaded)}
 					<div
 						class={`skeleton ${className || 'object-cover w-full shadow-2xl rounded-box'}`}
 						style="height: {height}px;"
@@ -96,7 +104,11 @@
 		border-radius: 2px 6px 6px 2px;
 	}
 
-	.book-image:hover {
+	.with-interactions {
+		cursor: pointer;
+	}
+	.with-interactions:hover {
+		cursor: pointer;
 		transform: perspective(1500px) rotateY(-2deg) translateX(-6px) scaleX(0.94);
 		transform-style: preserve-3d;
 		box-shadow:
