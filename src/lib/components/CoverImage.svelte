@@ -38,7 +38,7 @@
 						style="height: {height}px;"
 						onload={() => (imageLoaded = true)}
 						onerror={() => (err = true)}
-						src="https://covers.openlibrary.org/b/olid/{key}-M.jpg"
+						src="/api/proxy?url=https://covers.openlibrary.org/b/olid/{key}-M.jpg"
 					/>
 				{:else if !loading}
 					<div

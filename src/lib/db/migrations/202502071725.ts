@@ -65,7 +65,7 @@ export async function up(db: Kysely<Database>): Promise<void> {
 		.addColumn('book_id', 'text', (col) => col.notNull())
 		.addColumn('started_at', 'text')
 		.addColumn('finished_at', 'text')
-		.addColumn('rating', 'integer')
+		.addColumn('rating', 'real')
 		.addColumn('notes', 'text')
 		.addColumn('created_at', 'text', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
 		.addColumn('updated_at', 'text', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())

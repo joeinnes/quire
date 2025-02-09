@@ -34,7 +34,7 @@
 				onchange={handleInputChange}
 			/>
 		</label>
-		<button class="btn btn-error" onclick={() => deleteDb}>Delete DB</button>
+		<button class="btn btn-error" onclick={() => deleteDb()}>Delete DB</button>
 
 		<!--
     Don't need this if app is not multiplayerI
