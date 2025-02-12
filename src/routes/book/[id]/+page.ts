@@ -10,12 +10,18 @@ export const load = (async ({ params, fetch, parent }) => {
 		.orderBy('started_at desc')
 		.selectAll()
 		.execute();
-	console.log('reading sessions', await reading_sessions);
+	const on_shelves = db
+		?.selectFrom('shelf_books')
+		.where('book_id', '=', id)
+		.leftJoin('shelves', 'shelves.id', 'shelf_books.shelf_id')
+		.orderBy('added_at desc')
+		.selectAll()
+		.execute();
 	if (id) {
 		const bookSearch = fetch(
 			`https://openlibrary.org/search.json?q=key:/works/${id}&fields=*&limit=1`
 		).then((r) => r.json());
-		return { bookSearch, reading_sessions };
+		return { bookSearch, reading_sessions, on_shelves };
 	}
 
 	return { bookSearch: [], reading_sessions };

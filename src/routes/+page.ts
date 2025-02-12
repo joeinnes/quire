@@ -12,10 +12,9 @@ export const load = (async ({ url, fetch, parent }) => {
 
 	// Query the database for books on the 'currently reading' shelf
 	const currentlyReadingBooks = await db
-		.selectFrom('shelves')
-		.innerJoin('shelf_books', 'shelves.id', 'shelf_books.shelf_id')
-		.innerJoin('books', 'shelf_books.book_id', 'books.id')
-		.select(['books.id', 'books.title', 'books.authors', 'books.image_url'])
+		.selectFrom('shelf_books')
+		.innerJoin('shelves', 'shelves.id', 'shelf_books.shelf_id')
+		.select(['shelf_books.book_id'])
 		.where('shelves.name', '=', 'Currently Reading')
 		.execute();
 

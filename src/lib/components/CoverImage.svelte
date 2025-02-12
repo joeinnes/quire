@@ -25,24 +25,25 @@
 				<!-- if key then load image-->
 				{#if key && (loading || !imageLoaded)}
 					<div
-						class={`skeleton ${className || 'object-cover w-full shadow-2xl rounded-box'}`}
+						class={`skeleton ${className || 'object-cover w-full rounded-box'}`}
 						style="height: {height}px;"
 					></div>
 				{/if}
 				{#if key}
 					<img
-						class={`${className || 'object-cover w-full shadow-2xl rounded-box'}${
+						class={`${className || 'object-cover w-full rounded-box '}${
 							imageLoaded && !err ? 'block' : ' hidden'
 						}`}
 						alt={title}
 						style="height: {height}px;"
 						onload={() => (imageLoaded = true)}
 						onerror={() => (err = true)}
-						src="/api/proxy?url=https://covers.openlibrary.org/b/olid/{key}-M.jpg"
+						crossorigin="anonymous"
+						src="https://cdn.statically.io/img/covers.openlibrary.org/f=auto/b/olid/{key}-M.jpg"
 					/>
 				{:else if !loading}
 					<div
-						class="flex flex-col items-center justify-center w-full p-1 text-xs text-center border-4 shadow-2xl rounded-box bg-accent"
+						class="flex flex-col items-center justify-center w-full p-1 text-xs text-center border-4 rounded-box bg-accent"
 						style="height: {height}px;"
 					>
 						<div
@@ -75,7 +76,6 @@
 
 	.book-cover .book-inside {
 		box-shadow:
-			10px 40px 40px -10px #00000030,
 			inset -2px 0 0 grey,
 			inset -3px 0 0 #dbdbdb,
 			inset -4px 0 0 white,
@@ -90,9 +90,6 @@
 		line-height: 0;
 		position: relative;
 		border-radius: 2px 6px 6px 2px;
-		box-shadow:
-			6px 6px 18px -2px rgba(0, 0, 0, 0.2),
-			24px 28px 40px -6px rgba(0, 0, 0, 0.1);
 		transition: all 0.3s ease-in-out;
 		cursor: pointer;
 	}
@@ -111,9 +108,6 @@
 		cursor: pointer;
 		transform: perspective(1500px) rotateY(-2deg) translateX(-6px) scaleX(0.94);
 		transform-style: preserve-3d;
-		box-shadow:
-			6px 6px 12px -1px rgba(0, 0, 0, 0.1),
-			20px 14px 16px -6px rgba(0, 0, 0, 0.1);
 	}
 
 	.effect {

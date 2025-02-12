@@ -3,12 +3,18 @@
 	import CoverImage from '$lib/components/CoverImage.svelte';
 	import type { EventHandler } from 'svelte/elements';
 	import type { PageData } from './$types';
+	import AddToShelf from '$lib/components/AddToShelf.svelte';
+	import { clickOutside } from '$lib/utils/clickOutside';
 
 	let { data }: { data: PageData } = $props();
-	let { db, reading_sessions } = $derived(data);
+	let { db, reading_sessions, on_shelves } = $derived(data);
+
+	let addToShelfModal: HTMLDialogElement | undefined = $state();
+	let actionMenu: HTMLDetailsElement | undefined = $state();
 	$inspect(data).with((type, data) => {
 		// @ts-ignore
 		data.bookSearch.then((r) => console.log(r));
+		data.on_shelves?.then((r) => console.log(r));
 		if (data.reading_sessions) data.reading_sessions.then((r) => console.log(r));
 	});
 
@@ -17,7 +23,7 @@
 		if (!e.target) throw new Error('How did you call this without a target?!');
 		e.preventDefault();
 
-		const formData = new FormData(e.target);
+		const formData = new FormData(e.currentTarget);
 		const fields: Record<string, string> = {};
 
 		for (const [key, value] of formData.entries()) {
@@ -76,6 +82,8 @@
 	</section>
 {:then bookSearch}
 	{@const book = bookSearch.docs[0]}
+	<AddToShelf bind:modal={addToShelfModal} key={book.key} />
+
 	<div class="bg-primary text-primary-content">
 		<div class="w-64 p-8 pt-2 mx-auto">
 			<CoverImage key={book.cover_edition_key} title={book.title} disableInteractions={true} />
@@ -83,16 +91,44 @@
 	</div>
 
 	<section class="p-4 relative">
-		<div
-			class="dropdown dropdown-top dropdown-end absolute top-0 right-4 transform -translate-y-[50%]"
+		<details
+			class="dropdown dropdown-top dropdown-end absolute top-0 right-4 transform -translate-y-[50%] z-50"
+			bind:this={actionMenu}
+			use:clickOutside={() => {
+				if (!actionMenu) return;
+				actionMenu.open = false;
+			}}
 		>
-			<div tabindex="0" role="button" class="btn m-1">Click</div>
+			<summary class="btn btn-circle m-1 p-2 btn-xl"
+				><svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					class="size-6"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+					/>
+				</svg>
+			</summary>
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-				<li><button>Add to shelf</button></li>
-				<li><button>Remove from shelf</button></li>
+				<li>
+					<button
+						onclick={(e) => {
+							addToShelfModal?.showModal();
+						}}>Add to shelf</button
+					>
+				</li>
+				<li>
+					<button>Remove from shelf</button>
+				</li>
 			</ul>
-		</div>
+		</details>
 		<div class="text-3xl font-semibold capitalize text-pretty">
 			{book.title}
 		</div>
@@ -124,6 +160,15 @@
 					{/each}
 				</div>
 				<p class="text-sm">{book.ratings_average?.toFixed(2)}</p>
+			</div>
+			<div class="flex flex-col">
+				{#await on_shelves then shelfList}
+					{#if shelfList}
+						{#each shelfList as shelf}<div class="badge badge-soft badge-primary">
+								{shelf.name}
+							</div>{/each}
+					{/if}
+				{/await}
 			</div>
 		</div>
 		<form onsubmit={addReadingSession}>
