@@ -123,7 +123,9 @@
 	{/key}
 {/if}
 
-{#await popularBooks then popularBooksRes}
+{#await popularBooks}
+	<Shelf contents={[{ loading: true }]} title="Popular Today" />
+{:then popularBooksRes}
 	{#if popularBooksRes}
 		<Shelf contents={popularBooksRes.works} title="Popular Today" />
 	{/if}

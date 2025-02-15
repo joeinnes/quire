@@ -25,6 +25,7 @@
 					<div class="carousel-item">
 						<a class="w-30" href="/book/{book.book_id || '/works/' + book.key}">
 							<CoverImage
+								{...book}
 								key={book.coverKey || book.cover_edition_key}
 								title={book.title}
 								author={book?.author_name ? book.author_name[0] : ''}
