@@ -23,7 +23,7 @@
 			{#each covers as book}
 				{#await book then book}
 					<div class="carousel-item">
-						<a class="w-30" href="/book/{book.book_id || '/works/' + book.key}">
+						<a class="w-30" href="/book/{book.book_id || book.key.replace('/works/', '')}">
 							<CoverImage
 								{...book}
 								key={book.coverKey || book.cover_edition_key}

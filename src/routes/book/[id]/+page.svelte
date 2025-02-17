@@ -5,12 +5,15 @@
 	import type { PageData } from './$types';
 	import AddToShelf from '$lib/components/AddToShelf.svelte';
 	import { clickOutside } from '$lib/utils/clickOutside';
+	import RemoveFromShelf from '$lib/components/RemoveFromShelf.svelte';
 
 	let { data }: { data: PageData } = $props();
 	let { db, reading_sessions, on_shelves } = $derived(data);
 
 	let addToShelfModal: HTMLDialogElement | undefined = $state();
 	let actionMenu: HTMLDetailsElement | undefined = $state();
+	let removeFromShelfModal: HTMLDialogElement | undefined = $state();
+
 	$inspect(data).with((type, data) => {
 		// @ts-ignore
 		data.bookSearch.then((r) => console.log(r));
@@ -83,6 +86,7 @@
 {:then bookSearch}
 	{@const book = bookSearch.docs[0]}
 	<AddToShelf bind:modal={addToShelfModal} key={book.key} />
+	<RemoveFromShelf bind:modal={removeFromShelfModal} key={book.key} />
 
 	<div class="bg-primary text-primary-content">
 		<div class="w-64 p-8 pt-2 mx-auto">
@@ -125,7 +129,11 @@
 					>
 				</li>
 				<li>
-					<button>Remove from shelf</button>
+					<button
+						onclick={(e) => {
+							removeFromShelfModal?.showModal();
+						}}>Remove from shelf</button
+					>
 				</li>
 			</ul>
 		</details>

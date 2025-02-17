@@ -2,7 +2,7 @@
 	import CoverImage from '../lib/components/CoverImage.svelte';
 	import debounce from 'debounce';
 	import Illustration from '$lib/illustrations/Illustration.svelte';
-	import { _ITEMS_PER_PAGE } from './+page';
+	import { ITEMS_PER_PAGE } from '$lib/config';
 	import { goto } from '$app/navigation';
 	import Shelf from '$lib/components/Shelf.svelte';
 	const searchForBook = debounce((e) => {
@@ -13,11 +13,7 @@
 		e.target.form.requestSubmit();
 	}, 2000);
 	let { data } = $props();
-	let { bookList, currentlyReadingBooks, q } = $derived(data);
-	const popularBooks = fetch('https://openlibrary.org/trending/daily.json?limit=20').then((r) =>
-		r.json()
-	);
-	popularBooks.then((r) => console.log(r));
+	let { bookList, currentlyReadingBooks, q, popularBooks } = $derived(data);
 </script>
 
 <div class="bg-primary text-primary-content">
@@ -25,7 +21,9 @@
 	<div class="w-1/3 py-8 mx-auto"><Illustration /></div>
 </div>
 {#if !q}
-	<Shelf title="Currently Reading" contents={currentlyReadingBooks} />
+	{#if currentlyReadingBooks.length}
+		<Shelf title="Currently Reading" contents={currentlyReadingBooks} />
+	{/if}
 {:else}
 	{#key q}
 		<!-- Reawait the promise if the search query changes -->
@@ -38,8 +36,8 @@
 			<div class="px-4 my-4">
 				<h2 class="text-2xl font-semibold">
 					Results {#if bookList && bookList.docs}<span class="badge badge-soft badge-primary">
-							Page {1 + bookList?.offset / _ITEMS_PER_PAGE} / {Math.ceil(
-								bookList?.numFound / _ITEMS_PER_PAGE
+							Page {1 + bookList?.offset / ITEMS_PER_PAGE} / {Math.ceil(
+								bookList?.numFound / ITEMS_PER_PAGE
 							)}
 						</span>
 					{/if}
@@ -94,26 +92,26 @@
 						<div class="col-span-2 mx-auto my-8 join">
 							<button
 								class="shadow-none join-item btn disabled:bg-base-300"
-								style={bookList?.offset - _ITEMS_PER_PAGE < 0
+								style={bookList?.offset - ITEMS_PER_PAGE < 0
 									? 'background-color: color-mix(in oklab, var(--color-base-100) 75%, transparent)'
 									: ''}
-								disabled={bookList?.offset - _ITEMS_PER_PAGE < 0}
+								disabled={bookList?.offset - ITEMS_PER_PAGE < 0}
 								onclick={() =>
-									goto(`?q=${bookList?.q}&offset=${bookList?.offset - _ITEMS_PER_PAGE}'`)}>«</button
+									goto(`?q=${bookList?.q}&offset=${bookList?.offset - ITEMS_PER_PAGE}'`)}>«</button
 							>
 							<button class="shadow-none join-item btn"
-								>Page {1 + bookList?.offset / _ITEMS_PER_PAGE} / {Math.ceil(
-									bookList?.numFound / _ITEMS_PER_PAGE
+								>Page {1 + bookList?.offset / ITEMS_PER_PAGE} / {Math.ceil(
+									bookList?.numFound / ITEMS_PER_PAGE
 								)}</button
 							>
 							<button
 								class="shadow-none join-item btn"
-								disabled={bookList?.offset + _ITEMS_PER_PAGE >= bookList?.numFound}
-								style={bookList?.offset + _ITEMS_PER_PAGE >= bookList?.numFound
+								disabled={bookList?.offset + ITEMS_PER_PAGE >= bookList?.numFound}
+								style={bookList?.offset + ITEMS_PER_PAGE >= bookList?.numFound
 									? 'background-color: color-mix(in oklab, var(--color-base-100) 75%, transparent)'
 									: ''}
 								onclick={() =>
-									goto(`?q=${bookList?.q}&offset=${bookList?.offset + _ITEMS_PER_PAGE}`)}>»</button
+									goto(`?q=${bookList?.q}&offset=${bookList?.offset + ITEMS_PER_PAGE}`)}>»</button
 							>
 						</div>
 					{/if}

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const _ITEMS_PER_PAGE = 10;
+import { ITEMS_PER_PAGE } from '$lib/config';
 
 export const load = (async ({ url, fetch, parent }) => {
 	const { db } = await parent();
@@ -20,15 +20,19 @@ export const load = (async ({ url, fetch, parent }) => {
 
 	const bookList = query
 		? fetch(
-				`https://openlibrary.org/search.json?q=${query}&fields=key,edition_key,title,title_sort,first_publish_year,cover_edition_key,author_name,ratings_average,number_of_pages_median&limit=${_ITEMS_PER_PAGE}&offset=${offset}`
+				`https://openlibrary.org/search.json?q=${query}&fields=key,edition_key,title,title_sort,first_publish_year,cover_edition_key,author_name,ratings_average,number_of_pages_median&limit=${ITEMS_PER_PAGE}&offset=${offset}`
 			).then((r) => r.json())
 		: {
 				q: query
 			};
 
+	const popularBooks = fetch(
+		`https://openlibrary.org/trending/daily.json?limit=${ITEMS_PER_PAGE}`
+	).then((r) => r.json());
 	return {
 		bookList,
 		q: query,
-		currentlyReadingBooks // Include the currently reading books in the returned data
+		currentlyReadingBooks,
+		popularBooks
 	};
 }) satisfies PageLoad;

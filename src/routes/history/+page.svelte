@@ -1,15 +1,21 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import CoverImage from '$lib/components/CoverImage.svelte';
+	import { ITEMS_PER_PAGE } from '$lib/config';
+	import { page } from '$app/stores';
 
 	let { data }: { data: PageData } = $props();
-	let { sessions } = $derived(data);
+	let { sessions, totalCount } = $derived(data);
+	let currentPage = $derived(
+		Math.floor(Number($page.url.searchParams.get('offset') || 0) / ITEMS_PER_PAGE) + 1
+	);
 	let book = $state({});
 	const getBookDetails = async (key: string) => {
 		return fetch(`https://openlibrary.org/search.json?q=key:/works/${key}&fields=*&limit=1`)
 			.then((r) => r.json())
 			.then((r) => r.docs[0]);
 	};
+	sessions.then((r) => console.log(r));
 </script>
 
 <section class="p-2">
@@ -30,6 +36,21 @@
 									<div class="text-xs uppercase font-semibold opacity-60">
 										{book.author_name && book.author_name[0] ? book.author_name.join(', ') : ''} -
 										{book.first_publish_year}
+									</div>
+									<div class="rating rating-sm rating-half">
+										{#each Array(10)
+											.fill(0)
+											.map((_, i) => (i + 1) / 2) as star}
+											<div
+												class="mask mask-star-2 bg-accent {star % 1 === 0
+													? 'mask-half-2'
+													: 'mask-half-1'}"
+												aria-label="{star} star"
+												aria-current={star === Math.round(session.average_rating * 2) / 2
+													? 'true'
+													: 'false'}
+											></div>
+										{/each}
 									</div>
 									<p class="list-col-wrap">
 										{#if session.most_recent_finished}
@@ -59,3 +80,18 @@
 		{/if}
 	{/await}
 </section>
+
+{#if totalCount && totalCount.count > ITEMS_PER_PAGE}
+	<div class="join grid grid-cols-2 w-full max-w-xs mx-auto my-4">
+		<a
+			href="?offset={Math.max(0, (currentPage - 2) * ITEMS_PER_PAGE)}"
+			class="join-item btn btn-outline {currentPage === 1 ? 'btn-disabled' : ''}">Previous</a
+		>
+		<a
+			href="?offset={currentPage * ITEMS_PER_PAGE}"
+			class="join-item btn btn-outline {currentPage * ITEMS_PER_PAGE >= totalCount.count
+				? 'btn-disabled'
+				: ''}">Next</a
+		>
+	</div>
+{/if}

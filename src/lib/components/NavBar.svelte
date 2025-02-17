@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/state';
 	import debounce from 'debounce';
-	import { _ITEMS_PER_PAGE } from '../../routes/+page';
+	import { ITEMS_PER_PAGE } from '$lib/config';
 	const searchForBook = debounce((e) => {
 		e.preventDefault();
 		if (e.key === 'Enter') {
@@ -43,6 +43,9 @@
 			<ul
 				class="p-2 mt-3 shadow menu menu-sm dropdown-content bg-base-100 text-primary rounded-box z-1 w-52"
 			>
+				<li><a href="/">Home</a></li>
+				<li><a href="/history">My History</a></li>
+				<li><a href="/shelves">My Shelves</a></li>
 				<li>
 					<a href="/me">
 						<div class="avatar avatar-placeholder">
