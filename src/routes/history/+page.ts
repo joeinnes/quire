@@ -5,6 +5,8 @@ import type { PageLoad } from './$types';
 export const load = (async ({ parent, url }) => {
 	const offset = Number(url.searchParams.get('offset') || '0');
 	const { db } = await parent();
+	if (!db) throw new Error('Database connection not found');
+
 	const reading_sessions = db
 		.selectFrom('reading_sessions')
 		.select([

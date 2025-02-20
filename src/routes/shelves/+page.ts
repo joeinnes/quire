@@ -1,5 +1,6 @@
 import { ITEMS_PER_PAGE } from '$lib/config';
 import type { PageLoad } from './$types';
+import { sql } from 'kysely';
 
 export const load: PageLoad = async ({ parent, url }) => {
 	const { db, user } = await parent();
@@ -28,7 +29,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 		totalBooks = await db
 			.selectFrom('shelf_books')
 			.where('shelf_id', '=', shelfId)
-			.select(db.fn.count<number>('book_id').as('count'))
+			.select([sql<number>`COUNT(DISTINCT book_id)`.as('count')])
 			.executeTakeFirst();
 	}
 

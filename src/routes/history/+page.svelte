@@ -15,7 +15,6 @@
 			.then((r) => r.json())
 			.then((r) => r.docs[0]);
 	};
-	sessions.then((r) => console.log(r));
 </script>
 
 <section class="p-2">
@@ -59,9 +58,9 @@
 												: ''}, last time you finished was {new Intl.DateTimeFormat().format(
 												new Date(session.most_recent_finished)
 											)}
-										{:else}
+										{:else if session.started_at}
 											You started this on {new Intl.DateTimeFormat().format(
-												new Date(session.started_at)
+												new Date(session.started_at || new Date())
 											)}, and you haven't finished yet. {#if session.total_reads === 1}This is your
 												first time reading this book.{:else}
 												You've read this book {session.total_reads - 1} time{session.total_reads -
