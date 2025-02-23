@@ -12,7 +12,6 @@
 	let cw = $state(0);
 	let err = $state(false);
 	let height = $derived((cw * 59) / 36); // NOTE: this is a magic number, the aspect ratio of the cover image
-	$inspect(disableInteractions);
 </script>
 
 <div class="w-full book-items" bind:clientWidth={cw}>

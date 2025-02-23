@@ -11,7 +11,7 @@
 <div
 	class="flex bg-linear-to-br from-base-300 to-base-200 flex-col h-screen md:block md:mx-auto md:text-center md:p-4"
 >
-	<div class="md:mockup-phone h-full">
+	<div class="md:mockup-phone h-full md:h-auto">
 		<div class="md:mockup-phone-display bg-base-100 flex flex-col text-left h-full">
 			<NavBar />
 

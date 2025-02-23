@@ -14,7 +14,5 @@ export const load = (async () => {
 			db,
 			user
 		};
-	} catch (error) {
-		console.log('Ugh, no database. This sucks.', error);
-	}
+	} catch (error) {}
 }) satisfies LayoutLoad;

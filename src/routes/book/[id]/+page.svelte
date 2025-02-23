@@ -14,12 +14,7 @@
 	let actionMenu: HTMLDetailsElement | undefined = $state();
 	let removeFromShelfModal: HTMLDialogElement | undefined = $state();
 
-	$inspect(data).with((type, data) => {
-		// @ts-ignore
-		data.bookSearch.then((r) => console.log(r));
-		data.on_shelves?.then((r) => console.log(r));
-		if (data.reading_sessions) data.reading_sessions.then((r) => console.log(r));
-	});
+
 
 	const addReadingSession: EventHandler<SubmitEvent, HTMLFormElement> = async (e) => {
 		if (!data.user) throw new Error('User not found');
