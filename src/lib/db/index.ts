@@ -30,11 +30,14 @@ async function migrateToLatest(db: Kysely<Database>) {
 	const { error, results } = await migrator.migrateToLatest();
 	results?.forEach((it) => {
 		if (it.status === 'Success') {
+			console.log('Successful migration');
 		} else if (it.status === 'Error') {
+			console.log('Failed migration');
 		}
 	});
 
 	if (error) {
+		console.error('Failed to migrate');
 	}
 }
 
