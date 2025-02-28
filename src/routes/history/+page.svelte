@@ -63,7 +63,7 @@
 												new Date(session.started_at || new Date())
 											)}, and you haven't finished yet. {#if session.total_reads === 1}This is your
 												first time reading this book.{:else}
-												You've read this book {session.total_reads - 1} time{session.total_reads -
+												You've read this book {Math.max(session.total_reads - 1, 0)} time{session.total_reads -
 													1 !==
 												1
 													? 's'

@@ -22,29 +22,31 @@
 		<div class="carousel space-x-4 h-auto overflow-x-scroll">
 			{#each covers as book}
 				{#await book then book}
-					<div class="carousel-item">
-						<a class="w-30" href="/book/{book.book_id || book.key.replace('/works/', '')}">
-							<CoverImage
-								{...book}
-								key={book.coverKey || book.cover_edition_key}
-								title={book.title}
-								author={book?.author_name ? book.author_name[0] : ''}
-							/>
-							{#if book.title}
-								<div class="font-semibold capitalize text-pretty">
-									{book.title}
-								</div>
-							{/if}
-							{#if book.author_name || book.first_publish_year}
-								<div class="text-xs uppercase opacity-60">
-									{#if book.author_name}
-										{book.author_name && book.author_name[0] ? book.author_name.join(', ') : ''} -
-									{/if}{#if book.first_publish_year}&nbsp;
-										{book.first_publish_year}{/if}
-								</div>
-							{/if}
-						</a>
-					</div>
+					{#if book}
+						<div class="carousel-item">
+							<a class="w-30" href="/book/{book?.book_id || book?.key?.replace('/works/', '')}">
+								<CoverImage
+									{...book}
+									key={book?.coverKey || book?.cover_edition_key}
+									title={book?.title}
+									author={book?.author_name ? book.author_name[0] : ''}
+								/>
+								{#if book?.title}
+									<div class="font-semibold capitalize text-pretty">
+										{book.title}
+									</div>
+								{/if}
+								{#if book?.author_name || book?.first_publish_year}
+									<div class="text-xs uppercase opacity-60">
+										{#if book?.author_name}
+											{book.author_name && book.author_name[0] ? book.author_name.join(', ') : ''} -
+										{/if}{#if book?.first_publish_year}&nbsp;
+											{book.first_publish_year}{/if}
+									</div>
+								{/if}
+							</a>
+						</div>
+					{/if}
 				{/await}
 			{/each}
 		</div>
